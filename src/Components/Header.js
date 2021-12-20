@@ -16,6 +16,7 @@ import {
     Heading, 
     useDisclosure
 } from '@chakra-ui/react'
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search2Icon, LinkIcon } from "@chakra-ui/icons";
 
@@ -23,6 +24,11 @@ import { Wallets } from "./Wallets";
 
 export const Header = ({ showSearch }) => {
     const { isOpen, onOpen, onClose } = useDisclosure()
+    const [domain, setDomain] = useState('')
+
+    const handleInputChange = (e) => {
+        setDomain(e.target.value)
+    }
     
     return (
         <Flex justifyContent="space-between" mx={40}>
@@ -46,11 +52,17 @@ export const Header = ({ showSearch }) => {
                             variant="outline" 
                             placeholder="Search for .eth or .tez domains or addresses" 
                             bg="white" 
-                            size="md" 
+                            size="md"
+                            onChange={handleInputChange}
                             mr={0} 
                         />
                         </InputGroup>
-                        <Button p="1rem" colorScheme='teal' borderRadius="0">Search</Button>
+                        <Link to={{
+                            pathname: '/search',
+                            search: `?domain=${domain}`
+                            }}>
+                                <Button p="1rem" colorScheme='teal' borderRadius={0}>Search</Button>
+                        </Link>
                     </Box> : null}
                 <Button onClick={onOpen} colorScheme='teal' variant='outline' mt="6" size='sm'> 
                     <LinkIcon color="teal" w={15} h={15} /> 
