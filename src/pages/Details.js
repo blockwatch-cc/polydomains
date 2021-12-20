@@ -12,7 +12,14 @@ import {
     GridItem,
     Text, 
     Box, 
-    Heading, 
+    Heading,
+    Flex,
+    Button,
+    Input,
+    Editable,
+    EditablePreview,
+    EditableInput,
+    useClipboard 
 } from '@chakra-ui/react'
 import { useEffect, useState } from 'react';
 import { useParams } from "react-router-dom";
@@ -41,6 +48,9 @@ function Details() {
         }
     }, [])
 
+    const [value, setValue] = useState('Hello world')
+    const { hasCopied, onCopy } = useClipboard(value)
+
     return (
         <Box minHeight="100vh" >
             <Header showSearch={true} />
@@ -56,7 +66,17 @@ function Details() {
                                                 <Heading letterSpacing="wide" size="2xl" textAlign="center">{name}</Heading>
                                             </Box>
                                             <Box w='100%' h='10' gridColumnStart={5}>
-                                                <Text color="teal" fontSize="2xl">{domainInfo?.address ? shortenAddress(domainInfo?.address) : ""}</Text>
+                                                {/* <Text color="teal" fontSize="2xl">{domainInfo?.address ? shortenAddress(domainInfo?.address) : ""}</Text> */}
+                                                <Flex mb={2}>
+                                                    <Input color="teal" fontSize="2xl" value={domainInfo?.address ? shortenAddress(domainInfo?.address) : ""} isReadOnly placeholder='Welcome' />
+                                                    <Button onClick={onCopy} ml={2}>
+                                                        {hasCopied ? 'Copied' : 'Copy'}
+                                                    </Button>
+                                                </Flex>
+                                                <Editable>
+                                                    <EditablePreview width='100%' />
+                                                    <EditableInput />
+                                                </Editable>
                                             </Box>
                                         </Grid>
                                     </ListItem>
