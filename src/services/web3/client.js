@@ -10,6 +10,9 @@ export const client = new Web3ApiClient({
                   hangzhounet: {
                     provider: "https://rpc.hangzhou.tzstats.com",
                   },
+                  mainnet: {
+                    provider: "https://rpc.tzstats.com",
+                  },
                 },
                 defaultNetwork: "hangzhounet"
               })
