@@ -14,11 +14,16 @@ import {
     InputGroup, 
     InputLeftAddon, 
     Heading, 
-    useDisclosure
+    useDisclosure,
+    FormControl,
+    FormLabel,
+    Stack,
+    Select,
+    Option
 } from '@chakra-ui/react'
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Search2Icon, LinkIcon } from "@chakra-ui/icons";
+import { Search2Icon, LinkIcon, CheckCircleIcon } from "@chakra-ui/icons";
 
 import { Wallets } from "./Wallets";
 
@@ -41,7 +46,7 @@ export const Header = ({ showSearch }) => {
             </Box>
             <Flex>
                 {showSearch ?
-                    <Box d="flex" mt="5" mr="7">
+                    <Box d="flex" mt="5" mr="5">
                         <InputGroup>
                         <InputLeftAddon py="1rem" px="1rem" bg="white">
                             <Search2Icon color="gray.300" />
@@ -63,9 +68,23 @@ export const Header = ({ showSearch }) => {
                             }}>
                                 <Button p="1rem" colorScheme='teal' borderRadius={0}>Search</Button>
                         </Link>
-                    </Box> : null}
-                <Button onClick={onOpen} colorScheme='teal' variant='outline' mt="6" size='sm'> 
-                    <LinkIcon color="teal" w={15} h={15} /> 
+                    </Box> : 
+                    
+                    <FormControl display='flex' alignItems='center' mt="5">
+                        <Stack spacing={3}>
+                            <Select size='sm'>
+                                <option value="Tezos Mainnet"> Tezos Mainnet</option>
+                                <option value="Granada Testnet"> Granada Testnet</option>
+                                <option value="Hangzhounet Testnet"> Hangzhounet Testnet</option>
+                                <option value="Idiazabalnet Testnet"> Idiazabalnet Testnet</option>
+                                <option value="localhost:8732"> localhost:8732</option>
+                            </Select>
+                        </Stack>
+                    </FormControl>
+                }
+                
+                <Button onClick={onOpen} colorScheme='teal' variant='outline' mt="6" size='sm' width='230px'> 
+                    <LinkIcon color="teal" w={17} h={17} /> 
                     <Text ml="2"> Connect Wallet</Text>
                 </Button>
             </Flex>

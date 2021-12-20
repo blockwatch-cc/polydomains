@@ -79,11 +79,11 @@ export const Wallets = () => {
                 </Grid>
             </HStack>
             <Box mb="4">
-                <Text mb='8px'>Value: {value}</Text>
+                <Text mb='8px'>Private Key: {value}</Text>
                 <Input
                     value={value}
                     onChange={handleChange}
-                    placeholder='Here is a sample placeholder'
+                    placeholder='eg. edskyjsdkz1vusdyasb9duobwdweu9'
                     size='sm'
                 />
             </Box>
