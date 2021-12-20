@@ -35,7 +35,7 @@ export const Header = ({ showSearch }) => {
             </Box>
             <Flex>
                 {showSearch ?
-                    <Box d="flex"  mt="5">
+                    <Box d="flex" mt="5" mr="7">
                         <InputGroup>
                         <InputLeftAddon py="1rem" px="1rem" bg="white">
                             <Search2Icon color="gray.300" />
@@ -50,9 +50,9 @@ export const Header = ({ showSearch }) => {
                             mr={0} 
                         />
                         </InputGroup>
-                        <Button p="1rem" colorScheme='teal' borderRightRadius="10">Search</Button>
+                        <Button p="1rem" colorScheme='teal' borderRadius="0">Search</Button>
                     </Box> : null}
-                <Button onClick={onOpen} colorScheme='teal' variant='outline' mt="6" ml="3" size='sm'> 
+                <Button onClick={onOpen} colorScheme='teal' variant='outline' mt="6" size='sm'> 
                     <LinkIcon color="teal" w={15} h={15} /> 
                     <Text ml="2"> Connect Wallet</Text>
                 </Button>

@@ -12,7 +12,7 @@ import {
 const SUPPORTED_WALLETS = [
     {
         img: './assets/icons/walletconnect.svg',
-        name: "WalletConnect",
+        name: "Import Private Key",
         describe: "Import from private key",
         availability: true
     },
@@ -62,7 +62,7 @@ export const Wallets = () => {
       <HStack w='100%' {...group}>
         <Grid h='200px' w='100%' templateRows='repeat(2, 1fr)' templateColumns='repeat(5, 1fr)' gap={4}>    
             {SUPPORTED_WALLETS.map((item) => (
-                <GridItem colSpan={1} bg='white' borderRadius="10" boxShadow='xl'>
+                <GridItem colSpan={1} bg='white' borderRadius="10" boxShadow='xl' key={`${item.name}-${item.img}`}>
                     <CustomRadio key={item} {...getRadioProps({ value: item })}>
                         {item}
                     </CustomRadio>

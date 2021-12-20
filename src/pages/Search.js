@@ -45,6 +45,10 @@ function Search() {
         }
     }
 
+    const handleOnSearch = (e) => {
+        getDomainAcquisitionStatus(domain)
+    }
+
     useEffect(() => {
         if (domain) {
             getDomainAcquisitionStatus(domain)
@@ -54,7 +58,6 @@ function Search() {
     return (
         <Box minHeight="100vh" >
             <Header />
-
             <Box d="block">
                 <Box d="flex" mt="10" justifyContent="center">
                     <Box d="flex" width="60vw">
@@ -73,11 +76,10 @@ function Search() {
                                 onChange={handleSetDomain}
                                 mr={0} />
                         </InputGroup>
-                        <Button p="2rem" colorScheme='teal' borderRadius={0}>Search</Button>
+                        <Button p="2rem" colorScheme='teal' onClick={handleOnSearch} borderRadius={0}>Search</Button>
                     </Box>
                 </Box>
             </Box>
-
             { domainStatus ? 
                 <Box mt="10" d="flex" justifyContent="center">
                     <List spacing={3}>
