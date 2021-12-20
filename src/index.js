@@ -4,6 +4,7 @@ import './index.css';
 import App from './pages/App';
 import Search from './pages/Search';
 import Details from './pages/Details';
+import Register from './pages/Register';
 
 import reportWebVitals from './reportWebVitals';
 
@@ -18,6 +19,7 @@ ReactDOM.render(
           <Route path="/" element={<App />} />
           <Route path="/search" element={<Search/>} />
           <Route path="/details/:name" element={<Details />} />
+          <Route path="/register/:name" element={<Register />} />
         </Routes>
       </BrowserRouter>
 

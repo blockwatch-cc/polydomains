@@ -6,8 +6,11 @@ import {
     GridItem,
     HStack,
     useRadio,
-    useRadioGroup
+    useRadioGroup,
+    Input
 } from '@chakra-ui/react'
+
+import { useEffect, useState } from "react";
 
 const SUPPORTED_WALLETS = [
     {
@@ -38,7 +41,7 @@ export const CustomRadio = (props) => {
     return (
         <Box as="label">
             <input {...input} />
-            <Box {...checkbox} _checked={{ color: "fuchsia" }} textAlign="center" p="2">
+            <Box {...checkbox} _checked={{ color: "fuchsia" }} textAlign="center" p="2" >
                 <Image
                     boxSize='75px'
                     objectFit='contain'
@@ -58,17 +61,32 @@ export const Wallets = () => {
     });
     const group = getRootProps();
   
+    const [value, setValue] = useState('')
+    const handleChange = (event) => setValue(event.target.value)
+
     return (
-      <HStack w='100%' {...group}>
-        <Grid h='200px' w='100%' templateRows='repeat(2, 1fr)' templateColumns='repeat(5, 1fr)' gap={4}>    
-            {SUPPORTED_WALLETS.map((item) => (
-                <GridItem colSpan={1} bg='white' borderRadius="10" boxShadow='xl' key={`${item.name}-${item.img}`}>
-                    <CustomRadio key={item} {...getRadioProps({ value: item })}>
-                        {item}
-                    </CustomRadio>
-                </GridItem>
-            ))}                
-        </Grid>
-      </HStack>
+        <Box>
+            <HStack w='100%' {...group}>
+                <Grid h='200px' w='100%' templateRows='repeat(2, 1fr)' templateColumns='repeat(5, 1fr)' gap={4}>    
+                    {SUPPORTED_WALLETS.map((item) => (
+                        <GridItem colSpan={1} bg={item.availability? 'white' : '#eaeaea'} borderRadius="10" boxShadow='xl' key={`${item.name}-${item.img}`}>
+                            
+                            <CustomRadio key={item} {...getRadioProps({ value: item })}>
+                                {item}
+                            </CustomRadio>
+                        </GridItem>
+                    ))}                
+                </Grid>
+            </HStack>
+            <Box mb="4">
+                <Text mb='8px'>Value: {value}</Text>
+                <Input
+                    value={value}
+                    onChange={handleChange}
+                    placeholder='Here is a sample placeholder'
+                    size='sm'
+                />
+            </Box>
+        </Box>
     );
 }
