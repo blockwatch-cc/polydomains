@@ -1,10 +1,17 @@
-import { Link, Center, Image, Input, Box, Button, InputGroup, InputLeftAddon, Heading } from "@chakra-ui/react";
+import { useState } from "react";
+import { Link } from "react-router-dom"
 import { Search2Icon } from "@chakra-ui/icons";
+import { Center, Image, Input, Box, Button, InputGroup, InputLeftAddon, Heading } from "@chakra-ui/react";
 
 
 function App() {
+  const [domain, setDomain] = useState('')
+
+  const handleSetDomain = (e) => {
+    setDomain(e.target.value)
+  }
+
   return (
-    // bg="teal.100"
     <Box  minHeight="100vh" >
       <Box d="block" >
         <Center w='100%'>
@@ -17,12 +24,24 @@ function App() {
               <InputLeftAddon py="2rem" px="1rem" bg="white">
                 <Search2Icon color="gray.300" />
               </InputLeftAddon>
-              <Input colorScheme="whiteAlpha"  p="2rem" variant="outline" placeholder="Search for .eth or .tez domains or addresses" bg="white" size="md" mr={0} />
+              <Input 
+                variant="outline" 
+                colorScheme="whiteAlpha"  
+                placeholder="Search for .tez domains or addresses" 
+                onChange={handleSetDomain}
+                value={domain}
+                bg="white" 
+                size="md" 
+                mr={0} 
+                p="2rem" 
+              />
             </InputGroup>
-            <Link href='/searchresults'>
+            <Link to={{
+              pathname: '/search',
+              search: `?domain=${domain}`
+            }}>
                 <Button p="2rem" colorScheme='teal' borderRadius={0}>Search</Button>
             </Link>
-            
           </Box>
         </Box>
       </Box>
