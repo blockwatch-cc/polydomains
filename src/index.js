@@ -1,13 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { ChakraProvider } from '@chakra-ui/react'
-import {BrowserRouter, Routes, Route} from "react-router-dom";
 
 import App from './pages/App';
-import Search from './pages/Search';
-import Details from './pages/Details';
-import Register from './pages/Register';
-
 import './index.css';
 
 import reportWebVitals from './reportWebVitals';
@@ -15,15 +10,7 @@ import reportWebVitals from './reportWebVitals';
 ReactDOM.render(
   <React.StrictMode>
     <ChakraProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<App />} />
-          <Route path="/search" element={<Search/>} />
-          <Route path="/details/:name" element={<Details />} />
-          <Route path="/register/:name" element={<Register />} />
-        </Routes>
-      </BrowserRouter>
-
+        <App />
     </ChakraProvider>
   </React.StrictMode>,
   document.getElementById('root')

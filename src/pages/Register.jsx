@@ -151,7 +151,6 @@ function Register() {
                                     </GridItem>
                                 </Grid>
                             </GridItem>
-
                         </Grid>
                     </Box>
                     </VStack>

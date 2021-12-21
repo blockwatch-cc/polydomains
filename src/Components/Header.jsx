@@ -16,7 +16,7 @@ import {
     Heading, 
     useDisclosure
 } from '@chakra-ui/react'
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search2Icon, LinkIcon } from "@chakra-ui/icons";
 
@@ -45,6 +45,10 @@ export const Header = ({ showSearch }) => {
     const disconnectWallet = () => {
         setAccount(null)
     }
+
+    useEffect(() => {
+        console.log("account, ", account)
+    }, [])
 
     return (
         <Flex justifyContent="space-between" mx={40}>
@@ -88,8 +92,8 @@ export const Header = ({ showSearch }) => {
                     <Button onClick={disconnectWallet} colorScheme='green' variant='outline' mt="6" size='sm'> 
                         <LinkIcon color="green" w={15} h={15} /> 
                         <Text ml="2"> connected</Text>
-                </Button>
-                }    
+                    </Button>
+                } 
             </Flex>
             <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose} size={'xl'}>
                 <ModalOverlay />
