@@ -23,3 +23,20 @@ export const getAcquisitionInfo = async (domain) => {
         `
     })
 }
+
+export const buyDomain = async (payload) => {
+    const { domain, duration, address, confirmation } = payload
+    return client.query({
+        uri,
+        query: `
+            mutation {
+              buyDomain(
+                domain: "${domain}",
+                duration: "${duration}",
+                owner: "${address}",
+                confirmation: "${confirmation}"
+              )
+            }
+        `
+    })
+}
