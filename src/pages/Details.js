@@ -48,7 +48,7 @@ function Details() {
         }
     }, [])
 
-    const [value, setValue] = useState('Hello world')
+    const [value, setValue] = useState(domainInfo?.address)
     const { hasCopied, onCopy } = useClipboard(value)
 
     return (
@@ -66,9 +66,9 @@ function Details() {
                                                 <Heading letterSpacing="wide" size="2xl" textAlign="center">{name}</Heading>
                                             </Box>
                                             <Box w='100%' h='10' gridColumnStart={5}>
-                                                {/* <Text color="teal" fontSize="2xl">{domainInfo?.address ? shortenAddress(domainInfo?.address) : ""}</Text> */}
                                                 <Flex mb={2}>
-                                                    <Input color="teal" fontSize="2xl" value={domainInfo?.address ? shortenAddress(domainInfo?.address) : ""} isReadOnly placeholder='Welcome' />
+                                                    <Text color="teal" fontSize="2xl">{domainInfo?.address ? shortenAddress(domainInfo?.address) : ""}</Text>
+                                                    {/* <Input color="teal" fontSize="2xl" value={domainInfo?.address ? shortenAddress(domainInfo?.address) : ""} isReadOnly placeholder='Welcome' /> */}
                                                     <Button onClick={onCopy} ml={2}>
                                                         {hasCopied ? 'Copied' : 'Copy'}
                                                     </Button>
