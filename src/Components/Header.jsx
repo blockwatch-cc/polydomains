@@ -16,20 +16,36 @@ import {
     Heading, 
     useDisclosure
 } from '@chakra-ui/react'
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search2Icon, LinkIcon } from "@chakra-ui/icons";
 
 import { Wallets } from "./Wallets";
+import { WalletContext } from '../context/wallet';
 
 export const Header = ({ showSearch }) => {
-    const { isOpen, onOpen, onClose } = useDisclosure()
     const [domain, setDomain] = useState('')
+    const [secretKey, setSecretKey] = useState('')
+    const { isOpen, onOpen, onClose } = useDisclosure()
+    const { account, setAccount } = useContext(WalletContext)
 
-    const handleInputChange = (e) => {
+    const handleDomainInputChange = (e) => {
         setDomain(e.target.value)
     }
-    
+
+    const handleSecretInputChange = (e) => {
+        setSecretKey(e.target.value)
+    }
+
+    const handleConnectWallet = (account) => {
+        setAccount(account)
+        onClose()
+    }
+
+    const disconnectWallet = () => {
+        setAccount(null)
+    }
+
     return (
         <Flex justifyContent="space-between" mx={40}>
             <Box>
@@ -53,7 +69,7 @@ export const Header = ({ showSearch }) => {
                             placeholder="Search for .eth or .tez domains or addresses" 
                             bg="white" 
                             size="md"
-                            onChange={handleInputChange}
+                            onChange={handleDomainInputChange}
                             mr={0} 
                         />
                         </InputGroup>
@@ -64,10 +80,16 @@ export const Header = ({ showSearch }) => {
                                 <Button p="1rem" colorScheme='teal' borderRadius={0}>Search</Button>
                         </Link>
                     </Box> : null}
-                <Button onClick={onOpen} colorScheme='teal' variant='outline' mt="6" size='sm'> 
-                    <LinkIcon color="teal" w={15} h={15} /> 
-                    <Text ml="2"> Connect Wallet</Text>
+                {!account ? 
+                    <Button onClick={onOpen} colorScheme='teal' variant='outline' mt="6" size='sm'> 
+                        <LinkIcon color="teal" w={15} h={15} /> 
+                        <Text ml="2"> Connect Wallet</Text>
+                    </Button> :
+                    <Button onClick={disconnectWallet} colorScheme='green' variant='outline' mt="6" size='sm'> 
+                        <LinkIcon color="green" w={15} h={15} /> 
+                        <Text ml="2"> connected</Text>
                 </Button>
+                }    
             </Flex>
             <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose} size={'xl'}>
                 <ModalOverlay />
@@ -76,12 +98,23 @@ export const Header = ({ showSearch }) => {
                     <ModalCloseButton />
                     <ModalBody>                                
                         <Wallets />
+                        <Box mb="4">
+                        <Input
+                            value={secretKey}
+                            onChange={handleSecretInputChange}
+                            placeholder='Paste your secret key here'
+                            size='sm'
+                        />
+                        <Text fontSize="x-small" mt="1">Get a secret key from here.</Text>
+                    </Box>
                     </ModalBody>
                     <ModalFooter>
-                        <Button colorScheme='blue' mr={3} onClick={onClose}>
+                        <Button colorScheme='blue' mr={3} onClick={() => handleConnectWallet({
+                            secretKey
+                        })}>
                             Connect
                         </Button>
-                        <Button variant='ghost'>Close</Button>
+                        <Button variant='ghost' onClick={onClose}>Close</Button>
                     </ModalFooter>
                 </ModalContent>
             </Modal>

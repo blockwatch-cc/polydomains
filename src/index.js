@@ -1,15 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+import { ChakraProvider } from '@chakra-ui/react'
+import {BrowserRouter, Routes, Route} from "react-router-dom";
+
 import App from './pages/App';
 import Search from './pages/Search';
 import Details from './pages/Details';
 import Register from './pages/Register';
 
-import reportWebVitals from './reportWebVitals';
+import './index.css';
 
-import { ChakraProvider } from '@chakra-ui/react'
-import {BrowserRouter, Routes, Route} from "react-router-dom";
+import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
