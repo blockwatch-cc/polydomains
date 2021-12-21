@@ -19,7 +19,8 @@ import {
     FormLabel,
     Stack,
     Select,
-    Option
+    Option,
+    Textarea
 } from '@chakra-ui/react'
 import { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -104,16 +105,15 @@ export const Header = ({ showSearch }) => {
                 }
                 
                 {!account ? 
-                    <Button onClick={onOpen} colorScheme='teal' variant='outline' mt="6" size='sm'> 
+                    <Button onClick={onOpen} colorScheme='teal' variant='outline' mt="6" size='sm' width='230px'> 
                         <LinkIcon color="teal" w={15} h={15} /> 
                         <Text ml="2"> Connect Wallet</Text>
                     </Button> :
-                    <Button onClick={disconnectWallet} colorScheme='green' variant='outline' mt="6" size='sm'> 
+                    <Button onClick={disconnectWallet} colorScheme='green' variant='outline' mt="6" size='sm' width='230px'> 
                         <LinkIcon color="green" w={15} h={15} /> 
                         <Text ml="2"> connected</Text>
                     </Button>
                 } 
-                    {/* </Box> : null} */}
                 
             </Flex>
             <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose} size={'xl'}>
@@ -124,12 +124,19 @@ export const Header = ({ showSearch }) => {
                     <ModalBody>                                
                         <Wallets />
                         <Box mb="4">
-                        <Input
+                        {/* <Input
                             value={secretKey}
                             onChange={handleSecretInputChange}
                             placeholder='Paste your secret key here'
                             size='sm'
-                        />
+                        /> */}
+                        
+                        <Textarea 
+                            value={secretKey}
+                            onChange={handleSecretInputChange}
+                            rows="10"
+                            placeholder='Paste your secret key here' />
+
                         <Text fontSize="x-small" mt="1">Get a secret key from here.</Text>
                     </Box>
                     </ModalBody>
@@ -137,7 +144,7 @@ export const Header = ({ showSearch }) => {
                         <Button colorScheme='blue' mr={3} onClick={() => handleConnectWallet({
                             secretKey
                         })}>
-                            Connect
+                            Import
                         </Button>
                         <Button variant='ghost' onClick={onClose}>Close</Button>
                     </ModalFooter>

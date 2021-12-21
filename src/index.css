@@ -11,3 +11,8 @@ body {
   color: green;
   font-weight: 600;
 }
+
+.notAvailable{
+  font-size: 0.7em !important;
+  font-weight: 200;
+}

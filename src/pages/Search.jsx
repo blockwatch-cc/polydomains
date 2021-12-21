@@ -10,7 +10,7 @@ import {
     List,
     ListItem
 } from '@chakra-ui/react'
-import { useEffect, useState } from "react"
+import { useEffect, useState, useReducer } from "react"
 import { useLocation, Link } from "react-router-dom"
 import { Search2Icon, PlusSquareIcon, InfoOutlineIcon } from "@chakra-ui/icons";
 
@@ -25,24 +25,55 @@ function Search() {
     const domainParam = params.get('domain')
     
     if (typeof domainParam === 'string' && domainParam.length > 0) {
+
+        console.log("domainParam");
+        console.log(domainParam);
+
         domainInitialValue = domainParam
     }
 
     const [domain, setDomain] = useState(domainInitialValue)
-    const [domainStatus, setDomainStatus] = useState('')
 
     const handleSetDomain = (e) => {
         setDomain(e.target.value)
     }
 
+
+    const initialState = { state: 'LOADING', domain: 'loading' };
+
+    function reducer(state, action) {
+        switch (action.state) {
+            case 'LOADING':
+            return { state: action.state, domain: action.domain } ;
+            case 'SUCCESSFUL':
+            return { state: action.state, domain: action.domain } ;
+            case 'ERROR':
+            return { state: action.state, domain: action.domain } ;
+            default:
+            throw new Error();
+        }
+    }
+
+    const [domainStatus, dispatch] = useReducer(reducer, initialState);
+
+    
+
+    
+
+
     const getDomainAcquisitionStatus = async (domain) => {
-        const response = await getAcquisitionInfo(domain)
+        const response = await getAcquisitionInfo(domain);
+        
+        console.log("response");
+        console.log(response);
+
         if (response.errors) {
             // TODO(abdul): handle errors
+            dispatch({ state: 'ERROR', domain: response.errors });
             return
         }
         if(response.data.getAcquisitionInfo?.state) {
-            setDomainStatus(response.data.getAcquisitionInfo?.state)
+            dispatch({ state: 'SUCCESSFUL', domain: response.data.getAcquisitionInfo?.state });
         }
     }
 
@@ -82,24 +113,29 @@ function Search() {
                 </Box>
             </Box>
 
-            { domainStatus ? 
+            { domainStatus.state === 'LOADING' ? 
+
+                <Box mt="20" d="flex" justifyContent="center"> 
+                    <Loader />
+                </Box>:
+
                 <Box mt="10" d="flex" justifyContent="center">
                     <List spacing={3}>
                         <ListItem mt="5" p="8" pb="10" borderRadius="10" boxShadow='xl'>
                             <Flex width="60vw" justifyContent="space-between">
                                 <Flex>
-                                    <Heading letterSpacing="wide" size="2xl" textAlign="center">{domain ? domain : 'Search .eth or .tez domains'}</Heading>
+                                    <Heading letterSpacing="wide" size="2xl" textAlign="center">{domain ? domain : 'Search .eth or .tez domains'} <span Class="notAvailable"> {domainStatus.state === 'ERROR' ? ' is not available on this network' : ''} </span> </Heading>
                                 </Flex>
                                 <Flex>
-                                    {domainStatus === 'Taken' ?
+                                    {domainStatus.domain === 'Taken' ?
                                         <Box mr={2}>
                                             <Text bgClip="text" fontSize="2xl" mt="2" color="black">
-                                                {domainStatus}
+                                                {domainStatus.domain}
                                             </Text>
                                         </Box>
                                     : null } 
                                     <Box>
-                                        {domainStatus === 'Taken' ? 
+                                        {domainStatus.domain === 'Taken' ? 
                                             <Link to={{
                                                 pathname: `/details/${domain}`
                                             }}>
@@ -108,7 +144,7 @@ function Search() {
                                                     <Text ml="2">View</Text>    
                                                 </Button>
                                             </Link>
-                                        : domainStatus === 'CanBeBought' ?
+                                        : domainStatus.domain === 'CanBeBought' ?
                                             <Link to={{
                                                 pathname: `/register/${domain}`
                                             }}>
@@ -124,10 +160,7 @@ function Search() {
                         </ListItem>
                     </List>
                 </Box>
-            : 
-                <Box mt="20" d="flex" justifyContent="center"> 
-                    <Loader />
-                </Box>
+            
             }
         </Box>
     );

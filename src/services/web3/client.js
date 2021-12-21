@@ -14,7 +14,7 @@ export const client = new Web3ApiClient({
                     provider: "https://rpc.tzstats.com",
                   },
                 },
-                defaultNetwork: "mainnet"
+                defaultNetwork: "hangzhounet"
               })
         }
     ]

@@ -9,21 +9,25 @@ import {
     useRadioGroup
 } from '@chakra-ui/react'
 
+import walletconnect from '../assets/icons/walletconnect.svg';
+import portis from '../assets/icons/portis.svg';
+import torus from '../assets/icons/torus.svg';
+
 const SUPPORTED_WALLETS = [
     {
-        img: './assets/icons/walletconnect.svg',
+        img: walletconnect,
         name: "Import Private Key",
         describe: "Import from private key",
         availability: true
     },
     {
-        img: './assets/icons/portis.svg',
+        img: portis,
         name: "Temple Wallet",
         describe: "Scan with Portis to connect",
         availability: false
     },
     {
-        img: './assets/icons/torus.svg',
+        img: torus,
         name: "Beacon",
         describe: "Scan with Torus to connect",
         availability: false
@@ -42,7 +46,7 @@ export const CustomRadio = (props) => {
                 <Image
                     boxSize='75px'
                     objectFit='contain'
-                    src={process.env.PUBLIC_URL + props.children.img}
+                    src={props.children.img}
                 />
                 <Text fontSize='xs' mt="2"> {props.children.name} </Text>
             </Box>
@@ -71,15 +75,6 @@ export const Wallets = () => {
                     ))}                
                 </Grid>
             </HStack>
-            <Box mb="4">
-                <Text mb='8px'>Private Key: {value}</Text>
-                <Input
-                    value={value}
-                    onChange={handleChange}
-                    placeholder='eg. edskyjsdkz1vusdyasb9duobwdweu9'
-                    size='sm'
-                />
-            </Box>
         </Box>
     );
 }
