@@ -16,7 +16,7 @@ import { Search2Icon, PlusSquareIcon, InfoOutlineIcon } from "@chakra-ui/icons";
 import { getAcquisitionInfo } from "../services/web3/query"
 import { Header } from '../components/Header';
 import { Loader } from '../components/Loader';
-import { searchReducer } from '../reducer/search'
+import { acquisitionReducer } from '../reducer/acquisition'
 
 function Search() {
     let domainInitialValue = ''
@@ -28,14 +28,13 @@ function Search() {
         domainInitialValue = domainParam
     }
 
-    const [domain, dispatch] = useReducer(searchReducer, { state: '', name: domainInitialValue, payload: null, errors: null });
-
+    const [domain, dispatch] = useReducer(acquisitionReducer, { state: '', name: domainInitialValue, payload: null, errors: null })
     const handleSetDomain = (e) => {
         dispatch({ state: 'UPDATE_DOMAIN', name: e.target.value })
     }
 
     const getDomainAcquisitionStatus = async () => {
-        if (typeof domain.name !== 'string' && domain.name.length === 0) {
+        if (typeof domain.name !== 'string' || domain.name.length === 0) {
             return
         }
         dispatch({ state: 'LOADING' })

@@ -17,31 +17,42 @@ import {
     Button
 } from '@chakra-ui/react'
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 import { HamburgerIcon, LinkIcon, AddIcon, MinusIcon, CheckCircleIcon } from "@chakra-ui/icons";
 
 import { Header } from "../components/Header";
 import { shortenAddress } from '../utils/text';
-import { resolveDomainRecords } from '../services/web3/query';
+import { resolveDomainRecords, getAcquisitionInfo } from '../services/web3/query';
+import { acquisitionReducer } from '../reducer/acquisition';
 
 function Register() {
     const { name } = useParams()
     const [domainInfo, setDomainInfo] = useState(null)
 
-    const getDomainInfo = async () => {
-        const response = await resolveDomainRecords(name)
-        if (response.errors) {
-            // TODO(abdul): handle error
+    const [domain, dispatch] = useReducer(acquisitionReducer, {
+        state: '',
+        name,
+        payload: null,
+        errors: null
+    })
+
+    const getDomainAcquisitionStatus = async () => {
+        if (typeof domain.name !== 'string' || domain.name.length === 0) {
             return
         }
-        console.log(response.data.resolveDomainRecords)
-        setDomainInfo(response.data.resolveDomainRecords)
+        dispatch({ state: 'LOADING' })
+        const response = await getAcquisitionInfo(domain.name);
+        if (response.errors) {
+            dispatch({ state: 'QUERY_FAILED', errors: response.errors });
+            return
+        }
+        if(response.data.getAcquisitionInfo?.state) {
+            dispatch({ state: 'QUERY_SUCCESS', payload: response.data.getAcquisitionInfo });
+        }
     }
 
     useEffect(() => {
-        if (name) {
-            getDomainInfo(name)
-        }
+        getDomainAcquisitionStatus()
     }, [])
 
     return (
@@ -56,8 +67,7 @@ function Register() {
                                 <Text letterSpacing="wide" fontSize='sm' >Select the details of the domain you want to register below.</Text>
                             </VStack>
                         </Box>
-                        <Box d="flex" width="80vw" borderRadius="10" boxShadow='xl'>            
-                    
+                        <Box d="flex" width="80vw" borderRadius="10" boxShadow='xl'>
                         <Grid>
                             <GridItem rowSpan={2}>
                                 <List spacing={3}>

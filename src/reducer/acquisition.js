@@ -1,4 +1,4 @@
-export const searchReducer = (state, action) => {
+export const acquisitionReducer = (state, action) => {
     switch (action.state) {
         case 'LOADING':
             return { ...state, state: action.state, payload: null, errors: null }

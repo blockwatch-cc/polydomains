@@ -15,10 +15,6 @@ import {
     Heading,
     Flex,
     Button,
-    Input,
-    Editable,
-    EditablePreview,
-    EditableInput,
     useClipboard 
 } from '@chakra-ui/react'
 import { useParams } from "react-router-dom";
@@ -33,10 +29,8 @@ import { CopyIcon } from "@chakra-ui/icons";
 
 function Details() {
     const { name } = useParams()
-    const [domainInfo, setDomainInfo] = useState(null)
-
-    
     const [value, setValue] = useState('');
+    const [domainInfo, setDomainInfo] = useState(null)
     const { hasCopied, onCopy } = useClipboard(value);
 
     const getDomainInfo = async () => {
@@ -61,8 +55,6 @@ function Details() {
         }
     }, [])
 
-    const subjects ={ test: '', test2: ''};
-
     return (
         <Box minHeight="100vh" >
             <Header showSearch={true} />
@@ -77,19 +69,16 @@ function Details() {
                                             <Box w='100%' h='10'>
                                                 <Heading letterSpacing="wide" size="2xl" textAlign="center">{name}</Heading>
                                             </Box>
-                                            <Box w='100%' h='10' gridColumnStart={5}>
-                                                <Flex mb={2}>
-                                                    <Text color="teal" fontSize="2xl">{domainInfo?.address ? shortenAddress(domainInfo?.address) : ""}</Text>
-                                                    {/* <Input color="teal" fontSize="2xl" value={domainInfo?.address ? shortenAddress(domainInfo?.address) : ""} isReadOnly placeholder='Welcome' /> */}
-                                                    <Button onClick={onCopy} ml={2}>
-                                                    <CopyIcon color="black" /> {hasCopied ? 'Copied' : 'Copy'}
-                                                    </Button>
-                                                </Flex>
-                                                <Editable>
-                                                    <EditablePreview width='100%' />
-                                                    <EditableInput />
-                                                </Editable>
-                                            </Box>
+                                            {domainInfo?.address ?
+                                                <Box w='100%' h='10' gridColumnStart={5}>
+                                                    <Flex mb={2}>
+                                                        <Text color="teal" fontSize="2xl">{shortenAddress(domainInfo?.address)}</Text>
+                                                        <Button onClick={onCopy} ml={2}>
+                                                        <CopyIcon color="black" /> {hasCopied ? 'Copied' : 'Copy'}
+                                                        </Button>
+                                                    </Flex>
+                                                </Box>
+                                            : null }
                                         </Grid>
                                     </ListItem>
                                 </List>
@@ -106,9 +95,7 @@ function Details() {
                                                 <TabPanels>
                                                     <TabPanel  >               
                                                         <VStack  align="left" mt="6">
-                                                            
                                                             <Heading fontSize='lg' mt="2">Address Details</Heading> :
-
                                                             <HStack spacing='30px' align="left">
                                                                 <Box w='130px'>
                                                                     <Heading fontSize='md' mt="2">Name</Heading>
@@ -125,7 +112,7 @@ function Details() {
                                                                     <Text fontSize='md' mt="2">: {domainInfo?.address ? domainInfo?.address : "" }</Text>
                                                                 </Box>
                                                             </HStack>
-                                                            <HStack spacing='30px'>
+                                                            <HStack spacing='30px' pb="2">
                                                                     <Box w='130px'>
                                                                         <Heading fontSize='md' mt="2">Expiry</Heading>
                                                                     </Box>
@@ -133,14 +120,9 @@ function Details() {
                                                                         <Text fontSize='md' mt="2">: {domainInfo?.expiry ? domainInfo?.expiry : ""}</Text>
                                                                     </Box>
                                                             </HStack>
-
-                                                            <br />
                                                             <hr />
-                                                            
-                                                            <Heading fontSize='lg' mt="2">Additional Information</Heading> :
-                                                            
+                                                            <Heading fontSize='lg' py="2">Additional Information</Heading>
                                                             {Object.keys(domainInfo?.metadata).map((keyName, i) => (
-
                                                                 <HStack spacing='24px'>
                                                                     <Box w='130px'>
                                                                     <b>{keyName}</b>
@@ -149,10 +131,7 @@ function Details() {
                                                                         :<span>  {domainInfo?.metadata[keyName]}</span>
                                                                     </Box>
                                                                 </HStack>
-
                                                             ))}
-                                                    
-
                                                         </VStack>
                                                     </TabPanel>
                                                     <TabPanel>

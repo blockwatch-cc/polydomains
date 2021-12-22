@@ -16,10 +16,8 @@ import {
     Heading, 
     useDisclosure,
     FormControl,
-    FormLabel,
     Stack,
     Select,
-    Option,
     Textarea
 } from '@chakra-ui/react'
 import { useContext, useEffect, useState } from 'react';
@@ -28,6 +26,7 @@ import { Search2Icon, LinkIcon, CheckCircleIcon } from "@chakra-ui/icons";
 
 import { Wallets } from "./Wallets";
 import { WalletContext } from '../context/wallet';
+import { TezosConnections } from "../services/web3/client"
 
 export const Header = ({ showSearch }) => {
     const [domain, setDomain] = useState('')
@@ -51,11 +50,7 @@ export const Header = ({ showSearch }) => {
     const disconnectWallet = () => {
         setAccount(null)
     }
-
-    useEffect(() => {
-        console.log("account, ", account)
-    }, [])
-
+    
     return (
         <Flex justifyContent="space-between" mx={40}>
             <Box>
@@ -89,21 +84,17 @@ export const Header = ({ showSearch }) => {
                             }}>
                                 <Button p="1rem" colorScheme='teal' borderRadius={0}>Search</Button>
                         </Link>
-                    </Box> : 
-                    
+                    </Box> :
                     <FormControl display='flex' alignItems='center' mt="5">
                         <Stack spacing={3}>
                             <Select size='sm'>
-                                <option value="Tezos Mainnet"> Tezos Mainnet</option>
-                                <option value="Granada Testnet"> Granada Testnet</option>
-                                <option value="Hangzhounet Testnet"> Hangzhounet Testnet</option>
-                                <option value="Idiazabalnet Testnet"> Idiazabalnet Testnet</option>
-                                <option value="localhost:8732"> localhost:8732</option>
+                                {Object.keys(TezosConnections).map((network) => (
+                                    <option value={network}>{network}</option>
+                                ))}
                             </Select>
                         </Stack>
                     </FormControl>
                 }
-                
                 {!account ? 
                     <Button onClick={onOpen} colorScheme='teal' variant='outline' mt="6" size='sm' width='230px'> 
                         <LinkIcon color="teal" w={15} h={15} /> 
@@ -113,8 +104,7 @@ export const Header = ({ showSearch }) => {
                         <LinkIcon color="green" w={15} h={15} /> 
                         <Text ml="2"> connected</Text>
                     </Button>
-                } 
-                
+                }
             </Flex>
             <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose} size={'xl'}>
                 <ModalOverlay />
@@ -130,7 +120,6 @@ export const Header = ({ showSearch }) => {
                             placeholder='Paste your secret key here'
                             size='sm'
                         /> */}
-                        
                         <Textarea 
                             value={secretKey}
                             onChange={handleSecretInputChange}

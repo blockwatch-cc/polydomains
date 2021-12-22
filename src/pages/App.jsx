@@ -10,10 +10,10 @@ import Register from './Register';
 import { WalletContext } from "../context/wallet"
 
 function App() {
-  const [account, setAccount] = useState(null)
+  const [app, setApp] = useState(null)
 
   return (
-    <WalletContext.Provider value={{ account, setAccount }}>
+    <WalletContext.Provider value={{ app, setApp }}>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
