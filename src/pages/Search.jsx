@@ -5,18 +5,18 @@ import {
     Button, 
     InputGroup, 
     InputLeftAddon, 
-    Heading, 
     Flex,
     List,
     ListItem
 } from '@chakra-ui/react'
-import { useEffect, useState, useReducer } from "react"
+import { useEffect, useReducer } from "react"
 import { useLocation, Link } from "react-router-dom"
 import { Search2Icon, PlusSquareIcon, InfoOutlineIcon } from "@chakra-ui/icons";
 
 import { getAcquisitionInfo } from "../services/web3/query"
 import { Header } from '../components/Header';
 import { Loader } from '../components/Loader';
+import { searchReducer } from '../reducer/search'
 
 function Search() {
     let domainInitialValue = ''
@@ -25,67 +25,39 @@ function Search() {
     const domainParam = params.get('domain')
     
     if (typeof domainParam === 'string' && domainParam.length > 0) {
-
-        console.log("domainParam");
-        console.log(domainParam);
-
         domainInitialValue = domainParam
     }
 
-    const [domain, setDomain] = useState(domainInitialValue)
+    const [domain, dispatch] = useReducer(searchReducer, { state: '', name: domainInitialValue, payload: null, errors: null });
 
     const handleSetDomain = (e) => {
-        setDomain(e.target.value)
+        dispatch({ state: 'UPDATE_DOMAIN', name: e.target.value })
     }
 
-
-    const initialState = { state: 'LOADING', domain: 'loading' };
-
-    function reducer(state, action) {
-        switch (action.state) {
-            case 'LOADING':
-            return { state: action.state, domain: action.domain } ;
-            case 'SUCCESSFUL':
-            return { state: action.state, domain: action.domain } ;
-            case 'ERROR':
-            return { state: action.state, domain: action.domain } ;
-            default:
-            throw new Error();
+    const getDomainAcquisitionStatus = async () => {
+        if (typeof domain.name !== 'string' && domain.name.length === 0) {
+            return
         }
-    }
-
-    const [domainStatus, dispatch] = useReducer(reducer, initialState);
-
-    
-
-    
-
-
-    const getDomainAcquisitionStatus = async (domain) => {
-        const response = await getAcquisitionInfo(domain);
-        
-        console.log("response");
-        console.log(response);
-
+        dispatch({ state: 'LOADING' })
+        const response = await getAcquisitionInfo(domain.name);
         if (response.errors) {
-            // TODO(abdul): handle errors
-            dispatch({ state: 'ERROR', domain: response.errors });
+            dispatch({ state: 'QUERY_FAILED', errors: response.errors });
             return
         }
         if(response.data.getAcquisitionInfo?.state) {
-            dispatch({ state: 'SUCCESSFUL', domain: response.data.getAcquisitionInfo?.state });
+            dispatch({ state: 'QUERY_SUCCESS', payload: response.data.getAcquisitionInfo });
         }
     }
 
     const handleOnSearch = (e) => {
-        getDomainAcquisitionStatus(domain)
+        getDomainAcquisitionStatus()
     }
 
     useEffect(() => {
-        if (domain) {
-            getDomainAcquisitionStatus(domain)
-        }
-    }, [domain])
+        getDomainAcquisitionStatus()
+    }, [])
+
+    console.log(domain)
 
     return (
         <Box minHeight="100vh" >
@@ -104,7 +76,7 @@ function Search() {
                                 placeholder="Search for .eth or .tez domains or addresses" 
                                 bg="white" 
                                 size="md" 
-                                value={domain}
+                                value={domain.name}
                                 onChange={handleSetDomain}
                                 mr={0} />
                         </InputGroup>
@@ -112,56 +84,42 @@ function Search() {
                     </Box>
                 </Box>
             </Box>
-
-            { domainStatus.state === 'LOADING' ? 
-
+            {domain.state === 'LOADING' ?
                 <Box mt="20" d="flex" justifyContent="center"> 
                     <Loader />
-                </Box>:
-
+                </Box> :
+             domain.state === 'QUERY_SUCCESS' ?
                 <Box mt="10" d="flex" justifyContent="center">
-                    <List spacing={3}>
-                        <ListItem mt="5" p="8" pb="10" borderRadius="10" boxShadow='xl'>
-                            <Flex width="60vw" justifyContent="space-between">
-                                <Flex>
-                                    <Heading letterSpacing="wide" size="2xl" textAlign="center">{domain ? domain : 'Search .eth or .tez domains'} <span Class="notAvailable"> {domainStatus.state === 'ERROR' ? ' is not available on this network' : ''} </span> </Heading>
-                                </Flex>
-                                <Flex>
-                                    {domainStatus.domain === 'Taken' ?
-                                        <Box mr={2}>
-                                            <Text bgClip="text" fontSize="2xl" mt="2" color="black">
-                                                {domainStatus.domain}
-                                            </Text>
-                                        </Box>
-                                    : null } 
-                                    <Box>
-                                        {domainStatus.domain === 'Taken' ? 
-                                            <Link to={{
-                                                pathname: `/details/${domain}`
-                                            }}>
-                                                <Button colorScheme='teal' variant='solid' size='lg'> 
-                                                    <InfoOutlineIcon color="white" w={15} h={15} /> 
-                                                    <Text ml="2">View</Text>    
-                                                </Button>
-                                            </Link>
-                                        : domainStatus.domain === 'CanBeBought' ?
-                                            <Link to={{
-                                                pathname: `/register/${domain}`
-                                            }}>
-                                                <Button colorScheme='teal' variant='solid' size='lg'> 
-                                                    <PlusSquareIcon color="white" w={15} h={15} /> 
-                                                    <Text ml="2">Register</Text>    
-                                                </Button>
-                                            </Link>
-                                        : null}
-                                    </Box>
-                                </Flex>
-                            </Flex> 
-                        </ListItem>
-                    </List>
-                </Box>
-            
-            }
+                <List spacing={3}>
+                    <ListItem mt="5" p="8" pb="10" borderRadius="10" boxShadow='xl'>
+                        <Flex width="60vw" justifyContent="space-between">
+                            <Box mr={2}>
+                                <Text bgClip="text" fontSize="2xl" mt="2" color="black">{domain.name}</Text>
+                            </Box>
+                            {['Taken', 'CanBeBought'].includes(domain.payload.state) ?
+                                <Box>
+                                    <Link to={domain.payload.state === 'Taken' ? {
+                                        pathname: `/details/${domain.name}`
+                                    }: {
+                                        pathname: `/register/${domain.name}`
+                                    }}>
+                                        {domain.payload.state === 'Taken' ? 
+                                            <Button colorScheme='teal' variant='solid' size='lg'> 
+                                                <InfoOutlineIcon color="white" w={15} h={15} /> 
+                                                <Text ml="2">View</Text>    
+                                            </Button>
+                                        : <Button colorScheme='teal' variant='solid' size='lg'> 
+                                            <PlusSquareIcon color="white" w={15} h={15} /> 
+                                            <Text ml="2">Register</Text>    
+                                            </Button>
+                                        }
+                                    </Link>
+                                </Box>
+                            : null}
+                        </Flex>
+                    </ListItem>
+                </List>
+            </Box> : null}
         </Box>
     );
 }
