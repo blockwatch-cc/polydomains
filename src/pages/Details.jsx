@@ -17,42 +17,44 @@ import {
     Button,
     useClipboard 
 } from '@chakra-ui/react'
+import { toast } from "react-toastify"
+import { CopyIcon } from "@chakra-ui/icons";
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useReducer } from 'react';
 
 import { Header } from "../components/Header";
-import { shortenAddress } from '../utils/text';
-import { resolveDomainRecords } from '../services/web3/query';
 import { Loader } from '../components/Loader';
-
-import { CopyIcon } from "@chakra-ui/icons";
+import { WalletContext } from '../context/wallet';
+import { extractErrorMessage, shortenAddress } from '../utils/text';
+import { resolveDomainRecords } from '../services/web3/query';
+import { resolveDomainRecordsReducer } from '../reducer/domain';
 
 function Details() {
     const { name } = useParams()
-    const [value, setValue] = useState('');
-    const [domainInfo, setDomainInfo] = useState(null)
-    const { hasCopied, onCopy } = useClipboard(value);
+    const { hasCopied, onCopy } = useClipboard('');
+    const [domainRecord, dispatch] = useReducer(resolveDomainRecordsReducer, { state: '', name, payload: null, errors: null })
+    const { app } = useContext(WalletContext)
 
-    const getDomainInfo = async () => {
-        const response = await resolveDomainRecords(name)
-        if (response.errors) {
-            // TODO(abdul): handle error
+    const getDomainRecord = async () => {
+        if (typeof domainRecord.name !== 'string' || domainRecord.name.length === 0) {
             return
         }
-
-        console.log("resp");
-        response.data.resolveDomainRecords.metadata = JSON.parse(response.data.resolveDomainRecords.data);
-        console.log(response.data.resolveDomainRecords.metadata);
-        // console.log(JSON.parse(response.data.resolveDomainRecords));
-
-        setValue(response.data.resolveDomainRecords.address)
-        setDomainInfo(response.data.resolveDomainRecords)
+        dispatch({ state: 'LOADING' })
+        const response = await resolveDomainRecords({ network: app.network }, domainRecord.name);
+        if (response.errors) {
+            const message = extractErrorMessage(response.errors, 'failed to get domain records')
+            toast.error(message)
+            dispatch({ state: 'QUERY_FAILED', errors: response.errors });
+            return
+        }
+        if(response.data.resolveDomainRecords) {
+            response.data.resolveDomainRecords.metadata = JSON.parse(response.data.resolveDomainRecords.data)
+            dispatch({ state: 'QUERY_SUCCESS', payload: response.data.resolveDomainRecords });
+        }
     }
 
     useEffect(() => {
-        if (name) {
-            getDomainInfo(name)
-        }
+        getDomainRecord()
     }, [])
 
     return (
@@ -69,12 +71,12 @@ function Details() {
                                             <Box w='100%' h='10'>
                                                 <Heading letterSpacing="wide" size="2xl" textAlign="center">{name}</Heading>
                                             </Box>
-                                            {domainInfo?.address ?
+                                            {domainRecord.state === 'QUERY_SUCCESS'  && domainRecord.payload ?
                                                 <Box w='100%' h='10' gridColumnStart={5}>
                                                     <Flex mb={2}>
-                                                        <Text color="teal" fontSize="2xl">{shortenAddress(domainInfo?.address)}</Text>
+                                                        <Text color="teal" fontSize="2xl">{shortenAddress(domainRecord.payload?.address)}</Text>
                                                         <Button onClick={onCopy} ml={2}>
-                                                        <CopyIcon color="black" /> {hasCopied ? 'Copied' : 'Copy'}
+                                                            <CopyIcon color="black" /> {hasCopied ? 'Copied' : 'Copy'}
                                                         </Button>
                                                     </Flex>
                                                 </Box>
@@ -85,8 +87,12 @@ function Details() {
                             </GridItem>
                             <GridItem rowSpan={2}>
                                 <Grid  p="5" gap={4} >
-                                    <GridItem colSpan={4}>
-                                        { domainInfo ? 
+                                    {domainRecord.state === 'LOADING' ? 
+                                        <Box mt="20" d="flex" justifyContent="center"> 
+                                            <Loader />
+                                        </Box>
+                                    : domainRecord.state === 'QUERY_SUCCESS' ? 
+                                        <GridItem colSpan={4}>
                                             <Tabs align='start' variant='enclosed'>
                                                 <TabList>
                                                     <Tab>Details</Tab>
@@ -95,13 +101,13 @@ function Details() {
                                                 <TabPanels>
                                                     <TabPanel  >               
                                                         <VStack  align="left" mt="6">
-                                                            <Heading fontSize='lg' mt="2">Address Details</Heading> :
+                                                            <Heading fontSize='lg' mt="2">Address Details</Heading>
                                                             <HStack spacing='30px' align="left">
                                                                 <Box w='130px'>
                                                                     <Heading fontSize='md' mt="2">Name</Heading>
                                                                 </Box>
                                                                 <Box w='670px'>
-                                                                    <Text fontSize='md' mt="2">: {domainInfo?.name ? domainInfo?.name : null}</Text>
+                                                                    <Text fontSize='md' mt="2">{domainRecord?.name ? domainRecord?.name : null}</Text>
                                                                 </Box>
                                                             </HStack>
                                                             <HStack spacing='30px'>
@@ -109,7 +115,7 @@ function Details() {
                                                                     <Heading fontSize='md' mt="2">Address</Heading>
                                                                 </Box>
                                                                 <Box w='670px'>
-                                                                    <Text fontSize='md' mt="2">: {domainInfo?.address ? domainInfo?.address : "" }</Text>
+                                                                    <Text fontSize='md' mt="2">{domainRecord?.payload?.address ? domainRecord?.payload?.address : "" }</Text>
                                                                 </Box>
                                                             </HStack>
                                                             <HStack spacing='30px' pb="2">
@@ -117,18 +123,18 @@ function Details() {
                                                                         <Heading fontSize='md' mt="2">Expiry</Heading>
                                                                     </Box>
                                                                     <Box w='670px'>
-                                                                        <Text fontSize='md' mt="2">: {domainInfo?.expiry ? domainInfo?.expiry : ""}</Text>
+                                                                        <Text fontSize='md' mt="2">{domainRecord?.payload?.expiry ? domainRecord?.payload?.expiry : ""}</Text>
                                                                     </Box>
                                                             </HStack>
                                                             <hr />
                                                             <Heading fontSize='lg' py="2">Additional Information</Heading>
-                                                            {Object.keys(domainInfo?.metadata).map((keyName, i) => (
-                                                                <HStack spacing='24px'>
+                                                            {Object.keys(domainRecord?.payload?.metadata).map((keyName, idx) => (
+                                                                <HStack spacing='24px' key={`${keyName}-${idx}`}>
                                                                     <Box w='130px'>
-                                                                    <b>{keyName}</b>
+                                                                        <Heading fontSize='md' mt="2">{keyName}</Heading>
                                                                     </Box>
                                                                     <Box w='670px'>
-                                                                        :<span>  {domainInfo?.metadata[keyName]}</span>
+                                                                        <Text fontSize='md' mt="2">{domainRecord?.payload?.metadata[keyName]}</Text>
                                                                     </Box>
                                                                 </HStack>
                                                             ))}
@@ -139,12 +145,8 @@ function Details() {
                                                     </TabPanel>
                                                 </TabPanels>
                                             </Tabs>
-                                        :
-                                            <Box mt="20" d="flex" justifyContent="center"> 
-                                                <Loader />
-                                            </Box>
-                                        }
-                                    </GridItem>
+                                        </GridItem> 
+                                    : null}
                                 </Grid>
                             </GridItem>
                         </Grid>

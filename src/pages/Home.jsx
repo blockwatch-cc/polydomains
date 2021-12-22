@@ -26,7 +26,7 @@ function Home() {
                 <Input 
                   variant="outline" 
                   colorScheme="whiteAlpha"  
-                  placeholder="Search for .tez domains or addresses" 
+                  placeholder="Search address" 
                   onChange={handleSetDomain}
                   value={domain}
                   bg="white" 

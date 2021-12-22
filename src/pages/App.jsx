@@ -1,16 +1,18 @@
 import { useState } from "react";
 import {BrowserRouter, Routes, Route} from "react-router-dom";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import Home from './Home';
 import Search from './Search';
 import Details from './Details';
-import Register from './Register';
-
 
 import { WalletContext } from "../context/wallet"
 
 function App() {
-  const [app, setApp] = useState(null)
+  const [app, setApp] = useState({
+    network: 'mainnet'
+  })
 
   return (
     <WalletContext.Provider value={{ app, setApp }}>
@@ -19,9 +21,9 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/search" element={<Search/>} />
           <Route path="/details/:name" element={<Details />} />
-          <Route path="/register/:name" element={<Register />} />
         </Routes>
       </BrowserRouter>
+      <ToastContainer position="top-center" />
     </WalletContext.Provider>
   );
 }

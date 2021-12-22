@@ -9,19 +9,23 @@ import {
     List,
     ListItem
 } from '@chakra-ui/react'
-import { useEffect, useReducer } from "react"
+import { useContext, useEffect, useReducer } from "react"
 import { useLocation, Link } from "react-router-dom"
 import { Search2Icon, PlusSquareIcon, InfoOutlineIcon } from "@chakra-ui/icons";
+import { toast } from 'react-toastify';
 
 import { getAcquisitionInfo } from "../services/web3/query"
 import { Header } from '../components/Header';
 import { Loader } from '../components/Loader';
-import { acquisitionReducer } from '../reducer/acquisition'
+import { acquisitionReducer } from '../reducer/domain'
+import { WalletContext } from '../context/wallet';
+import { extractErrorMessage } from '../utils/text';
 
 function Search() {
     let domainInitialValue = ''
     const location = useLocation()
     const params =  new URLSearchParams(location.search)
+    const { app } = useContext(WalletContext)
     const domainParam = params.get('domain')
     
     if (typeof domainParam === 'string' && domainParam.length > 0) {
@@ -29,6 +33,7 @@ function Search() {
     }
 
     const [domain, dispatch] = useReducer(acquisitionReducer, { state: '', name: domainInitialValue, payload: null, errors: null })
+
     const handleSetDomain = (e) => {
         dispatch({ state: 'UPDATE_DOMAIN', name: e.target.value })
     }
@@ -38,8 +43,10 @@ function Search() {
             return
         }
         dispatch({ state: 'LOADING' })
-        const response = await getAcquisitionInfo(domain.name);
+        const response = await getAcquisitionInfo({ network: app.network }, domain.name);
         if (response.errors) {
+            const message = extractErrorMessage(response.errors, 'failed to get domain avaialable')
+            toast.error(message)
             dispatch({ state: 'QUERY_FAILED', errors: response.errors });
             return
         }
@@ -56,8 +63,6 @@ function Search() {
         getDomainAcquisitionStatus()
     }, [])
 
-    console.log(domain)
-
     return (
         <Box minHeight="100vh" >
             <Header />
@@ -72,7 +77,7 @@ function Search() {
                                 colorScheme="whiteAlpha" 
                                 p="2rem" 
                                 variant="outline" 
-                                placeholder="Search for .eth or .tez domains or addresses" 
+                                placeholder="Search address" 
                                 bg="white" 
                                 size="md" 
                                 value={domain.name}
@@ -107,7 +112,7 @@ function Search() {
                                                 <InfoOutlineIcon color="white" w={15} h={15} /> 
                                                 <Text ml="2">View</Text>    
                                             </Button>
-                                        : <Button colorScheme='teal' variant='solid' size='lg'> 
+                                        : <Button colorScheme='teal' variant='solid' size='lg' disabled> 
                                             <PlusSquareIcon color="white" w={15} h={15} /> 
                                             <Text ml="2">Register</Text>    
                                             </Button>

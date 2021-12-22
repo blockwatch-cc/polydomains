@@ -19,7 +19,7 @@ export const client = new Web3ApiClient({
           uri: "w3://ens/tezos-domains.web3api.eth",
           plugin: tezosDomainsPlugin({
               connections: TezosConnections,
-              defaultNetwork: "hangzhounet"
+              defaultNetwork: "mainnet"
           })
         }
     ]

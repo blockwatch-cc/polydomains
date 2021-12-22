@@ -12,3 +12,16 @@ export const acquisitionReducer = (state, action) => {
             return
     }
 }
+
+export const resolveDomainRecordsReducer = (state, action) => {
+    switch (action.state) {
+        case 'LOADING':
+            return { ...state, state: action.state, payload: null, errors: null }
+        case 'QUERY_SUCCESS':
+            return { ...state, state: action.state, payload: action.payload, errors: null }
+        case 'QUERY_FAILED':
+            return { ...state, state: action.state, payload: null, errors: action.errors }
+        default:
+            return
+    }
+}
