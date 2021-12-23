@@ -15,12 +15,13 @@ import {
     Heading,
     Flex,
     Button,
-    useClipboard 
+    useClipboard,
+    Input
 } from '@chakra-ui/react'
 import { toast } from "react-toastify"
 import { CopyIcon } from "@chakra-ui/icons";
 import { useParams } from "react-router-dom";
-import { useContext, useEffect, useReducer } from 'react';
+import { useContext, useEffect, useReducer, useState } from 'react';
 
 import { Header } from "../components/Header";
 import { Loader } from '../components/Loader';
@@ -31,7 +32,8 @@ import { resolveDomainRecordsReducer } from '../reducer/domain';
 
 function Details() {
     const { name } = useParams()
-    const { hasCopied, onCopy } = useClipboard('');
+    const [address, setAddress] = useState('')
+    const { hasCopied, onCopy } = useClipboard(address);
     const [domainRecord, dispatch] = useReducer(resolveDomainRecordsReducer, { state: '', name, payload: null, errors: null })
     const { app } = useContext(WalletContext)
 
@@ -48,6 +50,7 @@ function Details() {
             return
         }
         if(response.data.resolveDomainRecords) {
+            setAddress(domainRecord.payload?.address)
             response.data.resolveDomainRecords.metadata = JSON.parse(response.data.resolveDomainRecords.data)
             dispatch({ state: 'QUERY_SUCCESS', payload: response.data.resolveDomainRecords });
         }
@@ -74,7 +77,7 @@ function Details() {
                                             {domainRecord.state === 'QUERY_SUCCESS'  && domainRecord.payload ?
                                                 <Box w='100%' h='10' gridColumnStart={5}>
                                                     <Flex mb={2}>
-                                                        <Text color="teal" fontSize="2xl">{shortenAddress(domainRecord.payload?.address)}</Text>
+                                                        <Input value={address} isReadOnly placeholder='Welcome' py="4" />
                                                         <Button onClick={onCopy} ml={2}>
                                                             <CopyIcon color="black" /> {hasCopied ? 'Copied' : 'Copy'}
                                                         </Button>
