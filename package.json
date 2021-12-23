@@ -2,6 +2,7 @@
   "name": "polydomains",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://blockwatch-cc.github.io/polydomains",
   "dependencies": {
     "@chakra-ui/icons": "^1.1.1",
     "@chakra-ui/react": "^1.7.3",
