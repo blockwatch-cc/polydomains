@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/polydomains/static/css/main.c6fb34c8.chunk.css",
-    "main.js": "/polydomains/static/js/main.e534ecdf.chunk.js",
-    "main.js.map": "/polydomains/static/js/main.e534ecdf.chunk.js.map",
+    "main.js": "/polydomains/static/js/main.655b4daf.chunk.js",
+    "main.js.map": "/polydomains/static/js/main.655b4daf.chunk.js.map",
     "runtime-main.js": "/polydomains/static/js/runtime-main.e4a101f1.js",
     "runtime-main.js.map": "/polydomains/static/js/runtime-main.e4a101f1.js.map",
     "static/css/2.58a45539.chunk.css": "/polydomains/static/css/2.58a45539.chunk.css",
@@ -21,6 +21,6 @@
     "static/css/2.58a45539.chunk.css",
     "static/js/2.2dfae517.chunk.js",
     "static/css/main.c6fb34c8.chunk.css",
-    "static/js/main.e534ecdf.chunk.js"
+    "static/js/main.655b4daf.chunk.js"
   ]
 }
