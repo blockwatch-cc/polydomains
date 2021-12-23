@@ -26,7 +26,7 @@ import { useContext, useEffect, useReducer, useState } from 'react';
 import { Header } from "../components/Header";
 import { Loader } from '../components/Loader';
 import { WalletContext } from '../context/wallet';
-import { extractErrorMessage, shortenAddress } from '../utils/text';
+import { extractErrorMessage } from '../utils/text';
 import { resolveDomainRecords } from '../services/web3/query';
 import { resolveDomainRecordsReducer } from '../reducer/domain';
 
@@ -50,7 +50,7 @@ function Details() {
             return
         }
         if(response.data.resolveDomainRecords) {
-            setAddress(domainRecord.payload?.address)
+            setAddress(response.data.resolveDomainRecords?.address)
             response.data.resolveDomainRecords.metadata = JSON.parse(response.data.resolveDomainRecords.data)
             dispatch({ state: 'QUERY_SUCCESS', payload: response.data.resolveDomainRecords });
         }
@@ -76,12 +76,14 @@ function Details() {
                                             </Box>
                                             {domainRecord.state === 'QUERY_SUCCESS'  && domainRecord.payload ?
                                                 <Box w='100%' h='10' gridColumnStart={5}>
-                                                    <Flex mb={2}>
-                                                        <Input value={address} isReadOnly placeholder='Welcome' py="4" />
-                                                        <Button onClick={onCopy} ml={2}>
-                                                            <CopyIcon color="black" /> {hasCopied ? 'Copied' : 'Copy'}
-                                                        </Button>
-                                                    </Flex>
+                                                    {address ? 
+                                                        <Flex mb={2}>
+                                                            <Input value={address} isReadOnly placeholder='Welcome' py="4" />
+                                                            <Button onClick={onCopy} ml={2}>
+                                                                <CopyIcon color="black" /> {hasCopied ? 'Copied' : 'Copy'}
+                                                            </Button>
+                                                        </Flex>
+                                                    : null}
                                                 </Box>
                                             : null }
                                         </Grid>
