@@ -1,5 +1,5 @@
 import { useState } from "react";
-import {BrowserRouter, Routes, Route} from "react-router-dom";
+import {HashRouter, Routes, Route} from "react-router-dom";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -16,13 +16,13 @@ function App() {
 
   return (
     <WalletContext.Provider value={{ app, setApp }}>
-      <BrowserRouter>
+      <HashRouter>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route exact path="/" element={<Home />} />
           <Route path="/search" element={<Search/>} />
           <Route path="/details/:name" element={<Details />} />
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
       <ToastContainer position="top-center" />
     </WalletContext.Provider>
   );
