@@ -47,7 +47,7 @@ export const Header = ({ showSearch }) => {
                         colorScheme="whiteAlpha"  
                         p="1rem" 
                         variant="outline" 
-                        placeholder="Search address" 
+                        placeholder="Search for Tezos domain" 
                         bg="white" 
                         size="md"
                         onChange={handleDomainInputChange}

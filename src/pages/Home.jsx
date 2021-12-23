@@ -28,7 +28,7 @@ function Home() {
                 <Input 
                   variant="outline" 
                   colorScheme="whiteAlpha"  
-                  placeholder="Search address" 
+                  placeholder="Search for Tezos domain" 
                   onChange={handleSetDomain}
                   value={domain}
                   bg="white" 

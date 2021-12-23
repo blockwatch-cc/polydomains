@@ -15,3 +15,9 @@ export const extractErrorMessage = (errors, defaultMessage) => {
     }
     return message
 }
+
+export const getTLD = (domain) => {
+    const domainSplit = domain.split('.')
+    const domainLen =  domainSplit.length
+    return domainSplit[domainLen-1]
+}

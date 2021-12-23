@@ -19,13 +19,14 @@ import { Header } from '../components/Header';
 import { Loader } from '../components/Loader';
 import { acquisitionReducer } from '../reducer/domain'
 import { WalletContext } from '../context/wallet';
-import { extractErrorMessage } from '../utils/text';
+import { extractErrorMessage, getTLD } from '../utils/text';
+import { TezosConnections } from '../services/web3/client';
 
 function Search() {
     let domainInitialValue = ''
     const location = useLocation()
     const params =  new URLSearchParams(location.search)
-    const { app } = useContext(WalletContext)
+    const { app, setApp } = useContext(WalletContext)
     const domainParam = params.get('domain')
     
     if (typeof domainParam === 'string' && domainParam.length > 0) {
@@ -43,7 +44,18 @@ function Search() {
             return
         }
         dispatch({ state: 'LOADING' })
-        const response = await getAcquisitionInfo({ network: app.network }, domain.name);
+        let network =  app.network
+        const tld = getTLD(domain.name)
+        if (!TezosConnections[app.network].supportedTLDs.includes(tld)) {
+            for (const net of Object.keys(TezosConnections)) {
+                if (TezosConnections[net].supportedTLDs.includes(tld)) {
+                    network = net
+                    setApp((a) => ({ ...a, network: net }))
+                    break
+                }
+            }
+        }
+        const response = await getAcquisitionInfo({ network }, domain.name);
         if (response.errors) {
             const message = extractErrorMessage(response.errors, 'failed to get domain avaialable')
             toast.error(message)
@@ -77,7 +89,7 @@ function Search() {
                                 colorScheme="whiteAlpha" 
                                 p="2rem" 
                                 variant="outline" 
-                                placeholder="Search address" 
+                                placeholder="Search for Tezos domain" 
                                 bg="white" 
                                 size="md" 
                                 value={domain.name}

@@ -3,13 +3,16 @@ import { tezosDomainsPlugin } from "@web3api/tezos-domains-plugin-js"
 
 export const TezosConnections = {
   granadanet: {
-    provider: "https://rpc.granada.tzstats.com"
+    provider: "https://rpc.granada.tzstats.com",
+    supportedTLDs: ['gra']
   },
   hangzhounet: {
     provider: "https://rpc.hangzhou.tzstats.com",
+    supportedTLDs: ['han']
   },
   mainnet: {
     provider: "https://rpc.tzstats.com",
+    supportedTLDs: ['tez']
   },
 }
 
