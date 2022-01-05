@@ -3,6 +3,8 @@ import { Link } from "react-router-dom"
 import { Search2Icon } from "@chakra-ui/icons";
 import { Center, Image, Input, Box, Button, InputGroup, InputLeftAddon, Heading } from "@chakra-ui/react";
 
+import searchImage from "../assets/search.png"
+
 function Home() {
   const [domain, setDomain] = useState('')
 
@@ -14,7 +16,7 @@ function Home() {
      <Box minHeight="100vh" >
         <Box d="block" >
           <Center w='100%'>
-            <Image justifyContent="center" boxSize='20vw' pt="0" objectFit='contain' src={process.env.PUBLIC_URL + './assets/search.png'}/>
+            <Image justifyContent="center" boxSize='20vw' pt="0" objectFit='contain' src={searchImage}/>
           </Center>        
           <Heading letterSpacing="wide" size="4xl"  textAlign="center">PolyDomains</Heading>
           <Box d="flex" mt="16" justifyContent="center">
@@ -26,7 +28,7 @@ function Home() {
                 <Input 
                   variant="outline" 
                   colorScheme="whiteAlpha"  
-                  placeholder="Search for .tez domains or addresses" 
+                  placeholder="Search for Tezos domain" 
                   onChange={handleSetDomain}
                   value={domain}
                   bg="white" 

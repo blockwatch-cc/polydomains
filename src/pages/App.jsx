@@ -1,27 +1,29 @@
 import { useState } from "react";
-import {BrowserRouter, Routes, Route} from "react-router-dom";
+import {HashRouter, Routes, Route} from "react-router-dom";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import Home from './Home';
 import Search from './Search';
 import Details from './Details';
-import Register from './Register';
-
 
 import { WalletContext } from "../context/wallet"
 
 function App() {
-  const [account, setAccount] = useState(null)
+  const [app, setApp] = useState({
+    network: 'mainnet'
+  })
 
   return (
-    <WalletContext.Provider value={{ account, setAccount }}>
-      <BrowserRouter>
+    <WalletContext.Provider value={{ app, setApp }}>
+      <HashRouter>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route exact path="/" element={<Home />} />
           <Route path="/search" element={<Search/>} />
           <Route path="/details/:name" element={<Details />} />
-          <Route path="/register/:name" element={<Register />} />
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
+      <ToastContainer position="top-center" />
     </WalletContext.Provider>
   );
 }
